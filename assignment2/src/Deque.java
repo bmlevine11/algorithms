@@ -1,137 +1,124 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
 /**
- * Created by brianlevine on 3/20/14.
+ * Created on 2/11/15.
+ * @author brianlevine
  */
 public class Deque<Item> implements Iterable<Item> {
 
-    /**
-     * TODO: Decide on data structure (definitely linked list)
-     * pointer to both ends of list
-     * instance variables
-     *
-     *
-     */
-
-    private int size; //size of deque
-    private Node first; //first link in deque
-    private Node last; // last link in deque
+    private int N; //queue size
+    private Node first;
+    private Node last;
 
     private class Node{
-        private Item item;
+
         private Node next;
         private Node previous;
-
+        private Item item;
     }
-
-    public Deque(){
-        size = 0;
+    /**
+    *
+    * Constructs an empty deque.
+    */
+    public Deque() {
         first = null;
         last = null;
+        N = 0;
     }
 
     /**
      *
-     * @return true if next entry == null
+     * Checks if the deque is empty
      */
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return first == null;
     }
 
     /**
      *
-     * @return number of entries in queue
-     * @param size
+     * Returns the number of items on the deque
      */
-    public int size(){
-        return size;
+    public int size() {
+        return N;
     }
 
     /**
-     * Take an item and add it to the front of the queue
-     * @param item
+     *
+     * Adds an item to the front
      */
-    public void addFirst(Item item){
-        if(item == null){throw new NullPointerException();}
-
-        Node oldFirst = first;
+    public void addFirst(Item item) {
+        if(item == null) throw new NullPointerException();
+        Node oldfirst = first;
         first = new Node();
+        first.next = oldfirst;
         first.item = item;
-        first.previous = null;
-
-        if(oldFirst == null){
-            first.next = null;
+        if(last == null){
             last = first;
         }
-
-        else {
-            oldFirst.previous = first;
-            first.next = oldFirst;
+        else{
+            oldfirst.previous = first;
         }
-        size++;
+        N++;
     }
 
     /**
-     * Take an item and add it to the end of the queue
-     * @param item
+     *
+     * Adds an item to the end
      */
-    public void addLast(Item item){
-        if(item == null){throw new NullPointerException();}
-
-        Node oldLast = last;
+    public void addLast(Item item) {
+        if(item == null) throw new NullPointerException();
+        Node oldlast = last;
         last = new Node();
+        last.previous = oldlast;
         last.item = item;
-        last.next = null;
-
-        if(isEmpty()){
-          first=last;
+        if(first == null){
+            first = last;
         }
-
-        else {
-            oldLast.next = last;
-            last.previous = oldLast;
+        else{
+            oldlast.next = last;
         }
-
-        size++;
+        N++;
     }
 
     /**
-     * remove the first item
-     * @return
+     *
+     * Removes and returns the item from the front
      */
-    public Item removeFirst(){
-        if(isEmpty()){throw new NoSuchElementException();}
+    public Item removeFirst() {
+        if(isEmpty()) throw new NoSuchElementException("Queue Underflow");
         Item item = first.item;
         first = first.next;
-        size--;
+        N--;
+        if(N == 0) last = null;
+        else first.previous = null;
         return item;
     }
 
     /**
-     * remove the last item
-     * @return
+     *
+     * Removes and returns the item from the end
      */
-    public Item removeLast(){
-        if(isEmpty()){throw new NoSuchElementException();}
+    public Item removeLast() {
+        if(isEmpty()) throw new NoSuchElementException("Queue Underflow");
         Item item = last.item;
         last = last.previous;
-        size--;
+        N--;
+        if(N == 0) first = null;
+        else last.next = null;
         return item;
     }
 
     /**
-     * return an iterator over items in order from front to end
-     * @return
+     *
+     * Returns an iterator over items in order from front to end
      */
-    public Iterator<Item> iterator(){
-        return new ListIterator();
-    }
+    public Iterator<Item> iterator() { return new ListIterator(); }
 
     private class ListIterator implements Iterator<Item> {
         private Node current = first;
         public boolean hasNext()  { return current != null;                     }
         public void remove()      { throw new UnsupportedOperationException();  }
+
         public Item next() {
             if (!hasNext()) throw new NoSuchElementException();
             Item item = current.item;
@@ -140,17 +127,7 @@ public class Deque<Item> implements Iterable<Item> {
         }
     }
 
-    public static void main(String[] args){
-        int n = 10;
-        Deque test = new Deque();
-        for (int i = 1; i <= n; i++){
-            test.addFirst(i);
-        }
+    public static void main(String[] args) {
 
-        for (int i = 1; i <= n; i++){
-            StdOut.print(test.removeLast());
-        }
-    }// End main
-
-
-}// End class
+    }
+}
